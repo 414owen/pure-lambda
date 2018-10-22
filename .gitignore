@@ -1,0 +1,5 @@
+lambda.tab*
+lex.yy.c
+lexer
+prog
+lambda
