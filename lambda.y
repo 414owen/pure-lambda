@@ -25,40 +25,22 @@ struct ast_node *parse_res;
 %%
 
 start:
-  applist {
-    parse_res = $1;
-  };
+  applist { parse_res = $1; };
 
 applist:
-  callableExpr applist {
-    $$ = malloc(sizeof(struct ast_node));
-    $$->type = A_APP;
-    $$->val.app.left = $1;
-    $$->val.app.right = $2;
-  }
+  callableExpr applist { $$ = ast_new_app($1, $2); }
   | expr;
 
 callableExpr:
   bracexpr
-  | VAR {
-    $$ = malloc(sizeof(struct ast_node));
-    $$->type = A_VAR;
-    $$->val.var = $1;
-  }
+  | VAR { $$ = ast_new_var($1); };
 
 expr:
   callableExpr
-  | LAMBDA VAR DOT applist {
-    $$ = malloc(sizeof(struct ast_node));
-    $$->type = A_FUNC;
-    $$->val.func.param = $2;
-    $$->val.func.body = $4;
-  };
+  | LAMBDA VAR DOT applist { $$ = ast_new_func($2, $4); };
 
 bracexpr:
-  LBRAC applist RBRAC {
-    $$ = $2;
-  };
+  LBRAC applist RBRAC { $$ = $2; };
 
 %%
 
