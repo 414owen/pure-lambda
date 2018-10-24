@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "eval.h"
 
 extern int yy_scan_string(const char*);
 extern FILE* yyin;
@@ -16,7 +17,12 @@ void repl(void) {
     if (!input) break;
     yy_scan_string(input);
     yyparse();
-    print_ast(parse_res);
+    struct ast_node *node = parse_res;
+    while (node) {
+      print_ast(node);
+      getchar();
+      node = single_reduction(node);
+    }
   }
 }
 
