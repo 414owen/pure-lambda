@@ -14,9 +14,7 @@ void print_ast_rec(struct ast_node *node) {
       break;
     case A_FUNC:
       printf("%c->", node->val.func.param);
-      // putchar('(');
       print_ast_rec(node->val.func.body);
-      // putchar(')');
       break;
     case A_VAR:
       putchar(node->val.var);
