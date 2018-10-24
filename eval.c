@@ -10,29 +10,30 @@ struct single_reduction_result {
 
 struct ast_node *rebind_placeholder(
   char placeholder,
-  struct ast_node *left,
+  struct ast_node *node,
   struct ast_node *val
 ) {
   struct ast_node *res;
-  switch (left->type) {
+  res = node;
+  switch (node->type) {
     case A_APP:
       res = ast_new_app(
-        rebind_placeholder(placeholder, left->val.app.left, val),
-        rebind_placeholder(placeholder, left->val.app.left, val)
+        rebind_placeholder(placeholder, node->val.app.left, val),
+        rebind_placeholder(placeholder, node->val.app.right, val)
       );
       break;
     case A_FUNC:
-      if (placeholder == left->val.func.param) {
-        res = left;
-      } else {
+      if (placeholder != node->val.func.param) {
         res = ast_new_func(
-          res->val.func.param,
-          rebind_placeholder(placeholder, res->val.func.body, val)
+          node->val.func.param,
+          rebind_placeholder(placeholder, node->val.func.body, val)
         );
       }
       break;
     case A_VAR:
-      res = val;
+      if (node->val.var == placeholder) {
+        res = val;
+      }
       break;
   }
   return res;
