@@ -4,19 +4,21 @@
 void print_ast_rec(struct ast_node *node) {
   switch (node->type) {
     case A_APP:
+      putchar('(');
       print_ast_rec(node->val.app.left);
+      putchar(')');
+      putchar('(');
       print_ast_rec(node->val.app.right);
+      putchar(')');
       break;
     case A_FUNC:
-      putchar('(');
       printf("%c->", node->val.func.param);
+      putchar('(');
       print_ast_rec(node->val.func.body);
       putchar(')');
       break;
     case A_VAR:
-      putchar('(');
       putchar(node->val.var);
-      putchar(')');
       break;
   }
 }

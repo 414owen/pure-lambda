@@ -62,7 +62,7 @@ expr:
   };
 
 bracexpr:
-  LBRAC expr RBRAC {
+  LBRAC applist RBRAC {
     $$ = $2;
   };
 
