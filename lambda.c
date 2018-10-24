@@ -13,7 +13,8 @@ extern struct ast_node *parse_res;
 
 void repl(void) {
   while (true) {
-    char *input = readline("> ");
+    char *input = readline("> \e[0;34m");
+    fputs("\e[0m", stdout);
     if (!input) break;
     yy_scan_string(input);
     yyparse();
