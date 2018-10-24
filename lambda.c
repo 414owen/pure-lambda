@@ -11,6 +11,13 @@ extern FILE* yyin;
 extern int yyparse(void);
 extern struct ast_node *parse_res;
 
+void print_eval_steps(struct ast_node *node) {
+  while (node) {
+    print_ast(node);
+    node = single_reduction(node);
+  }
+}
+
 void repl(void) {
   while (true) {
     char *input = readline("> \e[0;34m");
@@ -18,11 +25,7 @@ void repl(void) {
     if (!input) break;
     yy_scan_string(input);
     yyparse();
-    struct ast_node *node = parse_res;
-    while (node) {
-      print_ast(node);
-      node = single_reduction(node);
-    }
+    print_eval_steps(parse_res);
   }
 }
 
@@ -32,7 +35,7 @@ int main(int argc, char **argv) {
     if (!file) {return -1;}
     yyin = file;
     yyparse();
-    print_ast(parse_res);
+    print_eval_steps(parse_res);
   } else {
     repl();
   }
