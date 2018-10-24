@@ -40,46 +40,17 @@ struct ast_node *rebind_placeholder(
 
 // reduce an expression by a single beta-reduction
 struct single_reduction_result eval_step_rec(struct ast_node *node) {
-  struct single_reduction_result res, sub;
-  switch (node->type) {
-    case A_APP:
-      if (node->val.app.left->type == A_FUNC) {
-        res.reduced = true;
-        res.val = rebind_placeholder(
-          node->val.app.left->val.func.param,
-          node->val.app.left->val.func.body,
-          node->val.app.right
-        );
-      } else {
-        sub = eval_step_rec(node->val.app.left);
-        if (sub.reduced) {
-          res.reduced = true;
-          res.val = ast_new_app(sub.val, node->val.app.right);
-        } else {
-          sub = eval_step_rec(node->val.app.right);
-          if (sub.reduced) {
-            res.reduced = true;
-            res.val = ast_new_app( node->val.app.left, sub.val);
-          } else {
-            sub.reduced = false;
-            sub.val = node;
-          }
-        }
-      }
-      break;
-    case A_FUNC:
-      sub = eval_step_rec(node->val.func.body);
-      res.reduced = sub.reduced;
-      if (sub.reduced) {
-        res.val = ast_new_func(node->val.func.param, sub.val);
-      } else {
-        res.val = node;
-      }
-      break;
-    case A_VAR:
-      res.reduced = false;
-      res.val = node;
-      break;
+  struct single_reduction_result res;
+  if (node->type == A_APP && node->val.app.left->type == A_FUNC) {
+    res.reduced = true;
+    res.val = rebind_placeholder(
+      node->val.app.left->val.func.param,
+      node->val.app.left->val.func.body,
+      node->val.app.right
+    );
+  } else {
+    res.reduced = false;
+    res.val = node;
   }
   return res;
 }

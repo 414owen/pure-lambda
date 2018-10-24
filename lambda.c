@@ -20,7 +20,6 @@ void repl(void) {
     struct ast_node *node = parse_res;
     while (node) {
       print_ast(node);
-      getchar();
       node = single_reduction(node);
     }
   }
