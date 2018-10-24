@@ -21,60 +21,61 @@ struct ast_node *parse_res;
 %token LAMBDA DOT LBRAC RBRAC
 %token<var> VAR
 
-%type<node> expr braceexpr
+%type<node> expr bracexpr applist callableExpr
 
 %start start
 
 %%
 
 start:
-  expr {
+  applist {
     parse_res = $1;
-  }
-  ;
+  };
 
-expr:
-  braceexpr expr {
+applist:
+  callableExpr applist {
     $$ = malloc(sizeof(struct ast_node));
     $$->type = A_APP;
     $$->val.app.left = $1;
     $$->val.app.right = $2;
   }
-  | braceexpr
+  | expr;
+
+callableExpr:
+  bracexpr
   | VAR {
     $$ = malloc(sizeof(struct ast_node));
     $$->type = A_VAR;
     $$->val.var = $1;
-    printf("parsed a var: %c\n", $$->val.var);
   }
-  | LAMBDA VAR DOT expr {
+
+expr:
+  callableExpr
+  | LAMBDA VAR DOT applist {
     $$ = malloc(sizeof(struct ast_node));
     $$->type = A_FUNC;
     $$->val.func.param = $2;
     $$->val.func.body = $4;
-    printf("parsed a func: \\ %c . \n", $$->val.func.param);
-  }
-  ;
+  };
 
-braceexpr:
+bracexpr:
   LBRAC expr RBRAC {
     $$ = $2;
-  }
+  };
 
 %%
 
 int main(int argc, char **argv) {
   if (argc < 2) {return -1;}
   FILE *file = fopen(argv[1], "r");
-	if (!file) {return -1;}
-	yyin = file;
+  if (!file) {return -1;}
+  yyin = file;
   yyparse();
   print_ast(parse_res);
   return EXIT_SUCCESS;
 }
 
 void yyerror(const char* s) {
-	fprintf(stderr, "Parse error: %s\n", s);
-	exit(1);
+  fprintf(stderr, "Parse error: %s\n", s);
+  exit(1);
 }
-
