@@ -28,6 +28,11 @@ struct ast_node {
   union ast_node_val val;
 };
 
+void free_ast(struct ast_node*);
 void print_ast(struct ast_node*); 
+
+struct ast_node *ast_new_app(struct ast_node*, struct ast_node*);
+struct ast_node *ast_new_func(char, struct ast_node*);
+struct ast_node *ast_new_var(char);
 
 #endif

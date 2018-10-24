@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "ast.h"
 
 void print_ast_rec(struct ast_node *node) {
@@ -21,6 +22,40 @@ void print_ast_rec(struct ast_node *node) {
       putchar(node->val.var);
       break;
   }
+}
+
+struct ast_node *ast_new_app(struct ast_node* left, struct ast_node* right) {
+  struct ast_node *res = malloc(sizeof(struct ast_node));
+  res->type = A_APP;
+  res->val.app.left = left;
+  res->val.app.right = right;
+}
+
+struct ast_node *ast_new_func(char param, struct ast_node* body) {
+  struct ast_node *res = malloc(sizeof(struct ast_node));
+  res->type = A_FUNC;
+  res->val.func.param = param;
+  res->val.func.body = body;
+}
+
+struct ast_node *ast_new_var(char binding) {
+  struct ast_node *res = malloc(sizeof(struct ast_node));
+  res->type = A_VAR;
+  res->val.var = binding;
+}
+
+void free_ast(struct ast_node *node) {
+  if (node == NULL) return;
+  switch (node->type) {
+    case A_APP:
+      free_ast(node->val.app.left);
+      free_ast(node->val.app.right);
+      break;
+    case A_FUNC:
+      free_ast(node->val.func.body);
+      break;
+  }
+  free(node);
 }
 
 void print_ast(struct ast_node *node) {
