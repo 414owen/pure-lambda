@@ -36,12 +36,18 @@ struct ast_node *rebind_placeholder(
 
 // reduce an expression by a single beta-reduction
 struct ast_node *single_reduction(struct ast_node *node) {
-  if (node->type == A_APP && node->val.app.left->type == A_FUNC) {
-    return rebind_placeholder(
-      node->val.app.left->val.func.param,
-      node->val.app.left->val.func.body,
-      node->val.app.right
-    );
+  if (node->type == A_APP) {
+    if (node->val.app.left->type == A_FUNC) {
+      return rebind_placeholder(
+        node->val.app.left->val.func.param,
+        node->val.app.left->val.func.body,
+        node->val.app.right
+      );
+    }
+    struct ast_node *sub = single_reduction(node->val.app.left);
+    if (sub) {
+      return ast_new_app(sub, node->val.app.right);
+    }
   }
   return NULL;
 }

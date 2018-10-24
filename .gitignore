@@ -4,3 +4,5 @@ lexer
 prog
 lambda
 test.sh
+out
+scr

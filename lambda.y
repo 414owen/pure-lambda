@@ -18,29 +18,27 @@ struct ast_node *parse_res;
 %token LAMBDA DOT LBRAC RBRAC
 %token<var> VAR
 
-%type<node> expr bracexpr applist callableExpr
+%type<node> bracexpr applist callableExpr var expr lambda
 
 %start start
 
 %%
 
-start:
-  applist { parse_res = $1; };
+start: expr { parse_res = $1; };
+
+expr: applist | lambda;
 
 applist:
-  callableExpr applist { $$ = ast_new_app($1, $2); }
-  | expr;
+  applist callableExpr { $$ = ast_new_app($1, $2); }
+  | callableExpr;
 
-callableExpr:
-  bracexpr
-  | VAR { $$ = ast_new_var($1); };
+callableExpr: bracexpr | var;
 
-expr:
-  callableExpr
-  | LAMBDA VAR DOT applist { $$ = ast_new_func($2, $4); };
+var: VAR { $$ = ast_new_var($1); };
 
-bracexpr:
-  LBRAC applist RBRAC { $$ = $2; };
+lambda: LAMBDA VAR DOT expr{ $$ = ast_new_func($2, $4); };
+
+bracexpr: LBRAC expr RBRAC { $$ = $2; };
 
 %%
 
