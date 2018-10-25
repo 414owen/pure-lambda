@@ -44,7 +44,7 @@ cb
 (a->a)(b->b)
 b->b
 
-> (\a.a)(\a.a)
+> (\a.a)\a.a
 (a->a)(a->a)
 a->a
 
@@ -70,4 +70,11 @@ dda
 (a->(b->bb)a)c
 (b->bb)c
 cc
+
+> \abc.cba
+a->b->c->cba
+
+> (\ab.ba)\cc.c
+(a->b->ba)(c->c->c)
+b->b(c->c->c)
 ```
