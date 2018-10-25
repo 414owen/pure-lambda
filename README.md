@@ -65,4 +65,9 @@ b->b
 (b->b)(c->cc)da
 (c->cc)da
 dda
+
+> (\a.(\b.bb)a)a
+(a->(b->bb)a)c
+(b->bb)c
+cc
 ```
