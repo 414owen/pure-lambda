@@ -26,9 +26,7 @@ struct ast_node *rebind_placeholder(
       }
       break;
     case A_IDENT:
-      if (node->val.var == placeholder) {
-        res = val;
-      }
+      if (node->val.var == placeholder) res = val;
       break;
   }
   return res;
@@ -45,9 +43,7 @@ struct ast_node *single_reduction(struct ast_node *node) {
       );
     }
     struct ast_node *sub = single_reduction(node->val.app.left);
-    if (sub) {
-      return ast_new_app(sub, node->val.app.right);
-    }
+    if (sub) return ast_new_app(sub, node->val.app.right);
   }
   return NULL;
 }
