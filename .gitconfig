@@ -1,0 +1,5 @@
+[user]
+	name = Owen Shepherd
+	email = 414owen@gmail.com
+[core]
+	hooksPath = /Users/oshepherd/.git_hooks

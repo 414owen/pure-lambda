@@ -27,6 +27,7 @@ struct ast_node *ast_new_app(struct ast_node* left, struct ast_node* right) {
   res->type = A_APP;
   res->val.app.left = left;
   res->val.app.right = right;
+  return res;
 }
 
 struct ast_node *ast_new_func(char param, struct ast_node* body) {
@@ -34,12 +35,14 @@ struct ast_node *ast_new_func(char param, struct ast_node* body) {
   res->type = A_FUNC;
   res->val.func.param = param;
   res->val.func.body = body;
+  return res;
 }
 
 struct ast_node *ast_new_var(char binding) {
   struct ast_node *res = malloc(sizeof(struct ast_node));
   res->type = A_VAR;
   res->val.var = binding;
+  return res;
 }
 
 void free_ast(struct ast_node *node) {
@@ -51,6 +54,8 @@ void free_ast(struct ast_node *node) {
       break;
     case A_FUNC:
       free_ast(node->val.func.body);
+      break;
+    case A_VAR:
       break;
   }
   free(node);
