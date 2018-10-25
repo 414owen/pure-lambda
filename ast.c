@@ -8,15 +8,15 @@ void print_ast_rec(struct ast_node *node) {
       if (node->val.app.left->type == A_FUNC) putchar('(');
       print_ast_rec(node->val.app.left);
       if (node->val.app.left->type == A_FUNC) putchar(')');
-      if (node->val.app.right->type != A_VAR) putchar('(');
+      if (node->val.app.right->type != A_IDENT) putchar('(');
       print_ast_rec(node->val.app.right);
-      if (node->val.app.right->type != A_VAR) putchar(')');
+      if (node->val.app.right->type != A_IDENT) putchar(')');
       break;
     case A_FUNC:
       printf("%c->", node->val.func.param);
       print_ast_rec(node->val.func.body);
       break;
-    case A_VAR:
+    case A_IDENT:
       putchar(node->val.var);
       break;
   }
@@ -40,7 +40,7 @@ struct ast_node *ast_new_func(char param, struct ast_node* body) {
 
 struct ast_node *ast_new_var(char binding) {
   struct ast_node *res = malloc(sizeof(struct ast_node));
-  res->type = A_VAR;
+  res->type = A_IDENT;
   res->val.var = binding;
   return res;
 }
@@ -55,7 +55,7 @@ void free_ast(struct ast_node *node) {
     case A_FUNC:
       free_ast(node->val.func.body);
       break;
-    case A_VAR:
+    case A_IDENT:
       break;
   }
   free(node);

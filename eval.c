@@ -25,7 +25,7 @@ struct ast_node *rebind_placeholder(
         );
       }
       break;
-    case A_VAR:
+    case A_IDENT:
       if (node->val.var == placeholder) {
         res = val;
       }

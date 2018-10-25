@@ -10,7 +10,7 @@ extern int yylex();
 [ \t\n]         ;
 \\              { return LAMBDA; }
 \.              { return DOT; }
-[a-z]           { yylval.var = yytext[0]; return VAR; }
+[a-z]           { yylval.var = yytext[0]; return IDENT; }
 \(              { return LBRAC; }
 \)              { return RBRAC; }
 %%

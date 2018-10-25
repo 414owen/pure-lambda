@@ -4,7 +4,7 @@
 enum ast_node_type {
   A_APP,
   A_FUNC,
-  A_VAR,
+  A_IDENT,
 };
 
 struct ast_func {
