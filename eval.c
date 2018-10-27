@@ -6,27 +6,29 @@
 struct ast_node *rebind_placeholder(
   char placeholder,
   struct ast_node *node,
-  struct ast_node *val
+  struct ast_node *val,
+  unsigned debruijn
 ) {
   struct ast_node *res;
   res = node;
   switch (node->type) {
     case A_APP:
       res = ast_new_app(
-        rebind_placeholder(placeholder, node->val.app.left, val),
-        rebind_placeholder(placeholder, node->val.app.right, val)
+        rebind_placeholder(placeholder, node->val.app.left, val, debruijn),
+        rebind_placeholder(placeholder, node->val.app.right, val, debruijn)
       );
       break;
     case A_FUNC:
       if (placeholder != node->val.func.param) {
         res = ast_new_func(
           node->val.func.param,
-          rebind_placeholder(placeholder, node->val.func.body, val)
+          rebind_placeholder(placeholder, node->val.func.body, val, debruijn + 1)
         );
       }
       break;
     case A_IDENT:
-      if (node->val.var == placeholder) res = val;
+      if (node->val.var.debruijn == debruijn)
+        res = ast_new_var(val->val.var.chr, 0);
       break;
   }
   return res;
@@ -39,7 +41,8 @@ struct ast_node *single_reduction(struct ast_node *node) {
       return rebind_placeholder(
         node->val.app.left->val.func.param,
         node->val.app.left->val.func.body,
-        node->val.app.right
+        node->val.app.right,
+        1
       );
     }
     struct ast_node *sub = single_reduction(node->val.app.left);

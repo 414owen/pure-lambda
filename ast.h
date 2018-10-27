@@ -17,10 +17,15 @@ struct ast_app {
   struct ast_node *right;
 };
 
+struct var {
+  char chr;
+  unsigned debruijn;
+};
+
 union ast_node_val {
   struct ast_func func;
   struct ast_app app;
-  char var;
+  struct var var;
 };
 
 struct ast_node {
@@ -33,6 +38,6 @@ void print_ast(struct ast_node*);
 
 struct ast_node *ast_new_app(struct ast_node*, struct ast_node*);
 struct ast_node *ast_new_func(char, struct ast_node*);
-struct ast_node *ast_new_var(char);
+struct ast_node *ast_new_var(char, unsigned);
 
 #endif

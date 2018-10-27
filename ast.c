@@ -17,7 +17,7 @@ void print_ast_rec(struct ast_node *node) {
       print_ast_rec(node->val.func.body);
       break;
     case A_IDENT:
-      putchar(node->val.var);
+      putchar(node->val.var.chr);
       break;
   }
 }
@@ -38,10 +38,11 @@ struct ast_node *ast_new_func(char param, struct ast_node* body) {
   return res;
 }
 
-struct ast_node *ast_new_var(char binding) {
+struct ast_node *ast_new_var(char binding, unsigned debruijn) {
   struct ast_node *res = malloc(sizeof(struct ast_node));
   res->type = A_IDENT;
-  res->val.var = binding;
+  res->val.var.chr = binding;
+  res->val.var.debruijn = debruijn;
   return res;
 }
 
